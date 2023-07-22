@@ -1,42 +1,82 @@
 #include <stdio.h>
+#include <string.h>
 
 int main(void)
 {
-    long cc_number;
+    long creditCardNumber;
 
     do
     {
-		printf("Number: ");
-        scanf("%ld", &cc_number);
-    }
-    while (!(cc_number > 0));
+        /* Prompt user for credit number */
+        printf("Please input CC number: \n");
+        scanf("%ld", &creditCardNumber);
 
-    long working_cc = cc_number;
-    int total = 0;
+    } while (creditCardNumber <= 0);
 
+    long workingCC = creditCardNumber;
+    int sum = 0;
+    int count = 0;
+    long divisor = 10;
+    char result[11];
 
-    while (working_cc > 0)
+    // 1st case
+    while (workingCC > 0)
     {
-        int last_digit = working_cc % 10;
-        total = total + last_digit;
-        working_cc = working_cc / 100;
+        int lastDigit = workingCC % 10;
+        sum = sum + lastDigit;
+        workingCC = workingCC / 100;
     }
 
-    working_cc = cc_number / 10;
-    while (working_cc > 0)
+    // 2nd case
+    workingCC = creditCardNumber / 10;
+    while (workingCC > 0)
     {
-        int last_digit = working_cc % 10;
-        int times_two = last_digit * 2;
-        total = total + (times_two % 10) + (times_two / 10);
-        working_cc = working_cc / 100;
+        int lastDigit = workingCC % 10;
+        int timesTwo = lastDigit * 2;
+        sum = sum + (timesTwo % 10) + (timesTwo / 10);
+        workingCC = workingCC / 100;
     }
 
-	if (total % 10 == 0)
-	{
-		printf("yes\n");
-	}
-	else
-	{
-		printf("No\n");
-	}
+    // length of the number / digit count
+    workingCC = creditCardNumber;
+    while (workingCC != 0)
+    {
+        workingCC = workingCC / 10;
+        count++;
+    }
+
+    // Divisor
+    for (int i = 0; i < count - 2; i++)
+    {
+        divisor = divisor * 10;
+    }
+
+    int firstDigit = creditCardNumber / divisor;
+    int firstTwoDigits = creditCardNumber / (divisor / 10);
+
+    // Final checks
+    if (sum % 10 == 0)
+    {
+        if (firstDigit == 4 && (count == 13 || count == 16))
+        {
+            strcpy(result, "VISA");
+        }
+        else if ((firstTwoDigits == 34 || firstTwoDigits == 37) && count == 15)
+        {
+            strcpy(result, "AMEX");
+        }
+        else if ((50 < firstTwoDigits && firstTwoDigits < 56) && count == 16)
+        {
+            strcpy(result, "MASTERCARD");
+        }
+        else
+        {
+            strcpy(result, "INVALID");
+        }
+    }
+    else
+    {
+        strcpy(result, "INVALID");
+    }
+    printf("%s\n", result);
 }
